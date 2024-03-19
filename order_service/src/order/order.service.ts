@@ -8,11 +8,10 @@ import {
 import { ClientGrpc } from '@nestjs/microservices';
 import { UserServiceClient } from '../proto/user/user';
 import { firstValueFrom } from 'rxjs';
+import { Interval } from '@nestjs/schedule';
 
 @Injectable()
 export class OrderService implements OnModuleInit {
-  private logger = new Logger(OrderService.name);
-
   private userServiceClient: UserServiceClient;
 
   constructor(
@@ -24,18 +23,19 @@ export class OrderService implements OnModuleInit {
     this.userServiceClient =
       this.grpcClient.getService<UserServiceClient>('UserService');
   }
-
+  @Interval(5000)
   async getOrders() {
-    let d = '';
-    const a = await fetch('https://ipinfo.io/161.185.160.93/geo')
+    let fetchedData = '';
+    //random api call
+    await fetch('https://ipinfo.io/161.185.160.93/geo')
       .then((r) => r.json())
-      .then((data) => (d = data.org));
+      .then((data) => (fetchedData = data.org));
 
     const user = await firstValueFrom(
-      this.userServiceClient.getUser({ data: d }),
+      this.userServiceClient.getUser({ data: fetchedData }),
     );
-    this.logger.log(user);
 
-    return d;
+    console.log(user);
+    return fetchedData;
   }
 }
