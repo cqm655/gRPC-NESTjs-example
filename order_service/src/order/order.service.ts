@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { UserServiceClient } from '../proto/user/user';
 import { firstValueFrom } from 'rxjs';
@@ -23,7 +17,7 @@ export class OrderService implements OnModuleInit {
     this.userServiceClient =
       this.grpcClient.getService<UserServiceClient>('UserService');
   }
-  @Interval(5000)
+  // @Interval(5000)
   async getOrders() {
     let fetchedData = '';
     //random api call
